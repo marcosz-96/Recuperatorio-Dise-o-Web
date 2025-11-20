@@ -1,0 +1,113 @@
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Galería de Fotos</h2>
+    </div>
+
+    <div *ngIf="isLoading" class="text-center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Cargando...</span>
+        </div>
+    </div>
+
+    <div *ngIf="!isLoading && photos.length === 0" class="alert alert-info">
+        No hay fotos disponibles.
+    </div>
+
+    <table *ngIf="!isLoading && photos.length > 0" class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th style="text-align: left">ID</th>
+                <th style="text-align: left">Título</th>
+                <th style="text-align: left">Album ID</th>
+                <th style="text-align: left">Ruta Miniatura</th>
+                <th style="text-align: left">Ruta Imagen</th>
+                <th colspan="2" style="text-align: center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let photo of photos">
+                <td>{{ photo.id }}</td>
+                <td>{{ photo.title }}</td>
+                <td>{{ photo.albumId }}</td>
+                <td>
+                    <span class="url-text">{{ photo.thumbnailUrl }}</span>
+                </td>
+                <td>
+                    <span class="url-text">{{ photo.url }}</span>
+                </td>
+                <td style="text-align: center">
+                    <button class="btn btn-sm btn-info" (click)="edit(photo)">Editar</button>
+                </td>
+                <td style="text-align: center">
+                    <button class="btn btn-sm btn-danger" (click)="delete(photo.id)">Eliminar</button>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="7" class="bg-light">
+                    <div class="p-3">
+                        <h5 class="mb-3">Agregar Nueva Foto</h5>
+                        <div class="row align-items-end">
+                            <div class="col-md-2">
+                                <label>ID del Álbum</label>
+                                <input type="number" class="form-control" [(ngModel)]="newPhoto.albumId" placeholder="Album ID">
+                            </div>
+                            <div class="col-md-3">
+                                <label>Título</label>
+                                <input type="text" class="form-control" [(ngModel)]="newPhoto.title" placeholder="Título de la foto">
+                            </div>
+                            <div class="col-md-2">
+                                <label>Ruta de la Imagen</label>
+                                <input type="text" class="form-control" [(ngModel)]="newPhoto.url" placeholder="Ruta de la imagen">
+                            </div>
+                            <div class="col-md-2">
+                                <label>Ruta de la Miniatura</label>
+                                <input type="text" class="form-control" [(ngModel)]="newPhoto.thumbnailUrl" placeholder="Ruta de la miniatura">
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-primary btn-block mt-4" (click)="saveNew()">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="7" class="text-center">
+                    <strong>Total de fotos: {{ photos.length }}</strong>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<ng-template #modalTemplate let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">Editar Foto</h5>
+        <button type="button" class="close topright" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" *ngIf="selectedPhoto">
+        <div class="form-group">
+            <label>ID del Álbum</label>
+            <input type="number" class="form-control" [(ngModel)]="selectedPhoto.albumId">
+        </div>
+        <div class="form-group">
+            <label>Título</label>
+            <input type="text" class="form-control" [(ngModel)]="selectedPhoto.title">
+        </div>
+        <div class="form-group">
+            <label>Ruta de la Imagen</label>
+            <input type="text" class="form-control" [(ngModel)]="selectedPhoto.url">
+        </div>
+        <div class="form-group">
+            <label>Ruta de la Miniatura</label>
+            <input type="text" class="form-control" [(ngModel)]="selectedPhoto.thumbnailUrl">
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('cancel')">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="update()">Actualizar</button>
+    </div>
+</ng-template>
